@@ -26,8 +26,15 @@ class DriversRepository implements IDriversRepository {
     return this.ormRepository.save(driver);
   }
 
-  public async noCargo(): Promise<Driver[]> {
+  public async findDriversWithoutCargo(): Promise<Driver[]> {
     return this.ormRepository.find({ where: { isLoaded: false } });
+  }
+
+  public async findNumberOfDriversWithOwnVehicle(): Promise<number> {
+    const drivers_count = await this.ormRepository.count({
+      where: { hasOwnVehicle: true },
+    });
+    return drivers_count;
   }
 }
 

@@ -27,6 +27,22 @@ class FakeDriversRepository implements IDriversRepository {
     this.drivers[findIndex] = driver;
     return driver;
   }
+
+  public async findDriversWithoutCargo(): Promise<Driver[]> {
+    const driversNoCargo = this.drivers.filter(
+      driver => driver.isLoaded === false,
+    );
+
+    return driversNoCargo;
+  }
+
+  public async findNumberOfDriversWithOwnVehicle(): Promise<number> {
+    const driversWithOwnVehicle = this.drivers.filter(
+      driver => driver.hasOwnVehicle === true,
+    );
+
+    return driversWithOwnVehicle.length;
+  }
 }
 
 export default FakeDriversRepository;

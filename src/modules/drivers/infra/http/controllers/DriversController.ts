@@ -2,6 +2,8 @@ import { container } from 'tsyringe';
 import { Request, Response } from 'express';
 import CreateDriverService from '@modules/drivers/services/CreateDriverService';
 import UpdateDriverService from '@modules/drivers/services/UpdateDriverService';
+import FindDriversWithoutCargoService from '@modules/drivers/services/FindDriversWithoutCargoService';
+import FindNumberOfDriversWithOwnVehicleService from '@modules/drivers/services/FindNumberOfDriversWithOwnVehicleService';
 
 export default class DriversController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -53,5 +55,33 @@ export default class DriversController {
     });
 
     return response.json(editedVehicle);
+  }
+
+  public async findDriversWithoutCargo(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const driversWithoutCargo = container.resolve(
+      FindDriversWithoutCargoService,
+    );
+
+    const drivers = await driversWithoutCargo.execute();
+
+    if (drivers.length > 0) {
+      return response.json(drivers);
+    }
+    return response.status(204).json(drivers);
+  }
+
+  public async findNumberOfDriversWithOwnVehicle(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const driversWithOwnVehicle = container.resolve(
+      FindNumberOfDriversWithOwnVehicleService,
+    );
+
+    const drivers = await driversWithOwnVehicle.execute();
+    return response.json(drivers);
   }
 }
