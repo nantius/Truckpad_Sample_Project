@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MigrationInterface, QueryRunner, getRepository } from 'typeorm';
 import VehicleType from '@modules/drivers/infra/typeorm/entities/VehicleType';
 import VehicleTypeSeeds from '../seeds/VehicleTypeSeeds';
