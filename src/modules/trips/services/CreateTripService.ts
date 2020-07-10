@@ -25,7 +25,7 @@ class CreateTripService {
     private locationsRepository: ILocationsRepository,
   ) {}
 
-  public async execute(tripData: IRequestDTO): Promise<Trip | undefined> {
+  public async execute(tripData: IRequestDTO): Promise<Trip> {
     if (tripData.startLocationId === tripData.endLocationId) {
       throw new AppError(
         'Starting location cannot be the same as the destination location',

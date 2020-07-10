@@ -1,6 +1,7 @@
 import { getRepository, Repository } from 'typeorm';
 import ITripsRepository from '@modules/trips/repositories/ITripsRepository';
 import ICreateTripDTO from '@modules/trips/dtos/ICreateTripDTO';
+import IListTripsByTimeAndLocationDTO from '@modules/trips/dtos/IListTripsByTimeAndLocationDTO';
 import Trip from '../entities/Trip';
 
 class TripsRepository implements ITripsRepository {
@@ -30,6 +31,38 @@ class TripsRepository implements ITripsRepository {
     driverId: string,
   ): Promise<Trip[] | undefined> {
     return this.ormRepository.find({ where: { driverId } });
+  }
+
+  public async findNumberOfTripsByTimeAndLocation(
+    data: IListTripsByTimeAndLocationDTO,
+  ): Promise<number> {
+    const startTripCount = await this.ormRepository
+      .createQueryBuilder()
+      .from(Trip, 'trip')
+      .where(
+        `(trip.startLocationId = :id) AND (trip.startDateTime >= :startDate AND trip.startDateTime <= :endDate ) `,
+        {
+          id: data.locationId,
+          startDate: data.startDate,
+          endDate: data.endDate,
+        },
+      )
+      .getCount();
+
+    const endTripCount = await this.ormRepository
+      .createQueryBuilder()
+      .from(Trip, 'trip')
+      .where(
+        `(trip.endLocationId = :id) AND (trip.endDateTime >= :startDate AND trip.endDateTime <= :endDate ) `,
+        {
+          id: data.locationId,
+          startDate: data.startDate,
+          endDate: data.endDate,
+        },
+      )
+      .getCount();
+
+    return startTripCount + endTripCount;
   }
 }
 

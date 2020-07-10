@@ -9,7 +9,6 @@ const locationsController = new LocationsController();
 locationsRouter.post('/', locationsController.create);
 locationsRouter.get('/list_by_type', locationsController.listByType);
 
-// TODO temporario
 locationsRouter.get('/', async (request, response) => {
   const locRep = await getRepository(Location);
   const locs = await locRep.find();

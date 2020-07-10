@@ -1,7 +1,9 @@
 import { uuid as uuidv4 } from 'uuidv4';
 import Trip from '@modules/trips/infra/typeorm/entities/Trip';
 import ICreateTripDTO from '@modules/trips/dtos/ICreateTripDTO';
+import { isWithinInterval } from 'date-fns';
 import ITripsRepository from '../ITripsRepository';
+import IListTripsByTimeAndLocationDTO from '../../dtos/IListTripsByTimeAndLocationDTO';
 
 class FakeTripsRepository implements ITripsRepository {
   private trips: Trip[] = [];
@@ -32,6 +34,32 @@ class FakeTripsRepository implements ITripsRepository {
   ): Promise<Trip[] | undefined> {
     const trips = this.trips.filter(trip => trip.driverId === driverId);
     return trips;
+  }
+
+  public async findNumberOfTripsByTimeAndLocation(
+    data: IListTripsByTimeAndLocationDTO,
+  ): Promise<number> {
+    const { locationId, endDate, startDate } = data;
+
+    const foundTripByOrigin = this.trips.filter(
+      trip =>
+        trip.startLocationId === locationId &&
+        isWithinInterval(trip.startDateTime, {
+          start: startDate,
+          end: endDate,
+        }),
+    );
+
+    const foundTripByDestination = this.trips.filter(
+      trip =>
+        trip.endLocationId === locationId &&
+        isWithinInterval(trip.endDateTime, {
+          start: startDate,
+          end: endDate,
+        }),
+    );
+
+    return foundTripByOrigin.length + foundTripByDestination.length;
   }
 }
 

@@ -1,12 +1,12 @@
 import { injectable, inject } from 'tsyringe';
-import LocationsRepository from '../infra/typeorm/repositories/LocationsRepository';
 import IListLocationsByTypeDTO from '../dtos/IListLocationsByTypeDTO';
+import ILocationsRepository from '../repositories/ILocationsRepository';
 
 @injectable()
 class FindLocationsByTypeService {
   constructor(
     @inject('LocationsRepository')
-    private locationsRepository: LocationsRepository,
+    private locationsRepository: ILocationsRepository,
   ) {}
 
   public async execute(): Promise<IListLocationsByTypeDTO> {
